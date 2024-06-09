@@ -1,0 +1,10 @@
+.card-body-custom {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-body-custom .card-value {
+    margin-top: auto;
+    text-align: center;
+}
