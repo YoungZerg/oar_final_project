@@ -155,16 +155,24 @@ def update_card(country, region, year, indication):
     
     top_5_countries = indication_count[['Entity', indication]].head()
 
+    top_5_countries[indication] = top_5_countries[indication].round(2)
+
+    to_russian = {'Cellular Subscription': 'Мобильная связь',
+                  'Broadband Subscription': 'Широкополосная связь',
+                  'Internet Users(%)': 'Кол-во пользователей интернета'}
+
+    result = top_5_countries.rename(columns={'Entity': 'Страна', indication: to_russian[indication]})
+
     table = dbc.Table.from_dataframe(
-        top_5_countries, striped=True, bordered=True, hover=True, index=False
+        result, striped=True, bordered=True, hover=True, index=False
     )
     figure = px.line(
         years_country_data,
         x="Year",
         y=indication,
         title=f"Значение показателя по стране за 1980-{year}",
-        markers=True
-    )
+        markers=True,
+    ).update_layout(xaxis_title='Год', yaxis_title=to_russian[indication])
     return ct1, ct2, ct3, ct4, table, figure
 
 

@@ -3,6 +3,10 @@ import dash_bootstrap_components as dbc
 from data import df, world_df, cleaned_regions, df_c
 import plotly.express as px
 
+to_russian = {'Cellular Subscription': 'Мобильная связь',
+              'Broadband Subscription': 'Широкополосная связь',
+              'Internet Users(%)': 'Кол-во пользователей интернета'}
+
 layout = dbc.Container([
     html.Div([
         html.H3("Общие показатели", style={"textAlign": "center"}), #изменено расположение по центру
@@ -12,20 +16,13 @@ layout = dbc.Container([
     html.Div([
         html.Div([
             html.Label("Год"),
-            dcc.Input(
-                id="year_input",
-                type="number",
-                placeholder="Введите год (1980-2020)",
-                min=1980,
-                max=2020
+            dcc.Dropdown(
+                id = "year_input",
+                options = [{"label": i, "value": i} for i in range(1980, 2021)],
+                value=1980,
+                multi=False
             )
-            #dcc.Dropdown(
-            #    id = "crossfilter-reg",
-            #    options=[{"label": i, "value": i} for i in geo_regions],
-            #    value = ["East Asia and Pacific"],
-            #    multi=False
-            #)
-        ], style={"width": '60%', "display": "inline-block"}),
+        ], style={"width": '30%', "display": "inline-block"}),
         
         html.Div([
             html.Label("Показатели"),
@@ -58,6 +55,7 @@ layout = dbc.Container([
 )
 def update_line_chart(indication):
     figure = px.line(world_df, x='Year', y=indication, markers=True, title="Изменение выбранного показателя на мировом уровне (1980-2020)")
+    figure.update_layout(xaxis_title='Год', yaxis_title=to_russian[indication])
     return figure
 
 @callback(
@@ -66,18 +64,12 @@ def update_line_chart(indication):
      Input('year_input', 'value')]
 )
 def update_pie_chart(indication, year):
-    if year is None:
-        filtered_data = cleaned_regions[(cleaned_regions['Year'] == 1980)]
-        figure = px.pie(filtered_data, values=indication,
-                        names=filtered_data['Entity'],
-                        title=f'Значения выбранного показателя по регионам: {indication}',
-                        hover_data=['Year'])
-    else:
-        filtered_data = cleaned_regions[(cleaned_regions['Year'] == year)]
-        figure = px.pie(filtered_data, values=indication,
-                        names=filtered_data['Entity'],
-                        title=f'Значения выбранного показателя по регионам: {indication}',
-                        hover_data=['Year'])
+    filtered_data = cleaned_regions[(cleaned_regions['Year'] == year)]
+    result = filtered_data.rename(columns={'Entity': 'Регионы', 'Year': 'Год', indication: to_russian[indication]})
+    figure = px.pie(result, values=to_russian[indication],
+                    names=result['Регионы'],
+                    title=f'Значения выбранного показателя по регионам: {to_russian[indication]}',
+                    hover_data=['Год'])
     return figure
 
 @callback(
@@ -86,18 +78,12 @@ def update_pie_chart(indication, year):
      Input('year_input', 'value')]
 )
 def update_choropleth(indication, year):
-    if year is None:
-        filtered_data = df_c[(df_c['Year'] == 1980)]
-        figure = px.choropleth(filtered_data,
-                               locations='Code',
-                               color=indication,
-                               hover_name="Entity",
-                               hover_data=['Year'])
-    else:
-        filtered_data = df_c[(df_c['Year'] == year)]
-        figure = px.choropleth(filtered_data,
-                               locations='Code',
-                               color=indication,
-                               hover_name="Entity",
-                               hover_data=['Year'])
+
+    filtered_data = df_c[(df_c['Year'] == year)]
+    result = filtered_data.rename(columns={'Year': 'Год', 'Code': 'Код', indication: to_russian[indication]})
+    figure = px.choropleth(result,
+                           locations='Код',
+                           color=to_russian[indication],
+                           hover_name="Entity",
+                           hover_data=['Год'])
     return figure

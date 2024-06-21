@@ -1,7 +1,7 @@
 import dash_bootstrap_components as dbc
 
 from dash import Dash, Input, Output, dcc, html
-from pages import general, country
+from pages import general, country, about
 
 
 external_stylesheets = [dbc.themes.MINTY]
@@ -37,6 +37,7 @@ sidebar = html.Div(
             [
                 dbc.NavLink("Общие показатели", href="/", active="exact", style={"color": "white"}),
                 dbc.NavLink("Показатели по странам", href="/page-1", active="exact", style={"color": "white"}),
+                dbc.NavLink("О проекте", href="/page-2", active="exact", style={"color": "white"})
             ],
             vertical=True,
             pills=True,
@@ -59,6 +60,8 @@ def render_page_content(pathname):
         return general.layout
     elif pathname == "/page-1":
         return country.layout
+    elif pathname == '/page-2':
+        return about.layout
     # Если пользователь попытается перейти на другую страницу, верните сообщение 404. Мы изменим её в следующей практической.
     return html.Div(
         [

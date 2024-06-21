@@ -25,21 +25,12 @@ for_drop2 = ['High income',
 
 cleaned_regions = all_regions[~all_regions['Entity'].isin(for_drop)].copy()
 geo_regions = cleaned_regions['Entity'].unique()
-#print(geo_regions)
-#print(cleaned_regions[(cleaned_regions['Year'] == 1980)])
-#
-#fig = px.pie(cleaned_regions[(cleaned_regions['Year'] == 2020)],
-#             values="Cellular Subscription",
-#             names='Entity',
-#             hover_data='Year')
-#fig.show()
 
 
 df_c = df.copy()
 df_c['Code'] = df_c['Code'].replace('OWID_KOS', 'KOS')
 df_c = df_c[~df_c['Code'].isin(['OWID_WRL', 'Region'])].copy()
 unique_codes = df_c['Code'].unique()
-#print(df_c['Entity'].unique())
 
 world_df = df[df['Code'].str.contains('OWID_WRL')].copy()
 
