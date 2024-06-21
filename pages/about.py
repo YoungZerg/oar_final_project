@@ -93,7 +93,9 @@ layout = html.Div([
                 В исходный датасет был добавлен новый столбец для каждой страны - Region. В нем отражено, к какому региону принадлежит та или иная страна. 
             """),
             html.H2("Ссылка на датасет"),
-            dbc.Button("Перейти к датасету", outline=False, color="success", href="https://www.kaggle.com/datasets/ashishraut64/internet-users")
+            dbc.Button("Перейти к датасету", outline=False, color="success", href="https://www.kaggle.com/datasets/ashishraut64/internet-users"),
+            html.H2("Ссылка на репозиторий"),
+            dbc.Button("Перейти в репозиторий", outline=False, color="success", href="https://github.com/YoungZerg/oar_final_project")
         ],
         style={'padding': '20px'}
     )
